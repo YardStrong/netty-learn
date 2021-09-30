@@ -1,5 +1,6 @@
 package online.yardstrong.netty.config;
 
+import io.netty.channel.epoll.Epoll;
 import io.netty.util.internal.SystemPropertyUtil;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import online.yardstrong.netty.utils.IpUtil;
@@ -15,16 +16,6 @@ import java.nio.charset.StandardCharsets;
 public class CustomNettyConfig {
 
     /**
-     *  cpus
-     */
-    public static final int CPUS = Runtime.getRuntime().availableProcessors();
-
-    /**
-     * number of netty worker threads
-     */
-    public static final int WORKER_THREADS_NUMBER = SystemPropertyUtil.getInt("io.netty.eventLoopThreads", CPUS);
-
-    /**
      * default charset
      */
     public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
@@ -35,10 +26,9 @@ public class CustomNettyConfig {
     public static final int DEFAULT_PORT = 8080;
 
     /**
-     * about： epoll、select、poll(blocking)
-     * netty epoll enable switch
+     *  cpus
      */
-    public static final boolean NETTY_EPOLL_ENABLE = SystemPropertyUtil.getBoolean("netty.epoll.enable", false);
+    public static final int CPUS = Runtime.getRuntime().availableProcessors();
 
     /**
      * local ipv4
@@ -49,6 +39,18 @@ public class CustomNettyConfig {
      * OS Name
      */
     public static final String OS_NAME = System.getProperty("os.name");
+
+    /**
+     * number of netty worker threads
+     */
+    public static final int WORKER_THREADS_NUMBER = SystemPropertyUtil.getInt("io.netty.eventLoopThreads", CPUS);
+
+    /**
+     * about： epoll、select、poll(blocking)
+     * netty epoll enable switch
+     */
+    public static final boolean NETTY_EPOLL_ENABLE = OS_NAME.toLowerCase().contains("linux") &&
+            Epoll.isAvailable() && SystemPropertyUtil.getBoolean("netty.epoll.enable", true);
 
     /**
      * 设置日志框架，netty默认的InternalLoggerFactory会自己查找当前引入的日志框架<br/>

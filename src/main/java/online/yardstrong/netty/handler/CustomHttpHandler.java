@@ -1,18 +1,18 @@
 package online.yardstrong.netty.handler;
 
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.*;
 import online.yardstrong.netty.config.CustomNettyConfig;
 
 /**
  * 业务处理器
+ * sharable注解的ChannelHandler必须是线程安全的（sharable注解并不会实现单例模式，需要自己手动实现）
+ *
  * @author yardstrong
  */
+@ChannelHandler.Sharable
 public class CustomHttpHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
     public static ChannelHandler channelInitializer() {
@@ -31,7 +31,7 @@ public class CustomHttpHandler extends SimpleChannelInboundHandler<FullHttpReque
 
 
     /**
-     * 业务逻辑助理
+     * 业务逻辑处理
      *
      * @param channelHandlerContext 上下文
      * @param fullHttpRequest       请求
@@ -48,9 +48,8 @@ public class CustomHttpHandler extends SimpleChannelInboundHandler<FullHttpReque
         headers.add(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
         headers.add(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
 
-        channelHandlerContext.write(response);
+        channelHandlerContext.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
     }
-
 
 
     @Override

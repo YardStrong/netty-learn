@@ -23,7 +23,6 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -34,8 +33,14 @@ public class IpUtil {
 
     private static final InternalLogger LOG = InternalLoggerFactory.getInstance(IpUtil.class);
 
+    /**
+     * Ipv4地址正则表达式
+     */
     private static final String IP_REGEX = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
 
+    /**
+     * UNKNOWN
+     */
     private static String LOCAL_HOST = "unknown";
 
     static {
@@ -43,23 +48,30 @@ public class IpUtil {
         if (isNotEmpty(host)) {
             LOCAL_HOST = host;
         } else {
-
             try {
                 String hostName = InetAddress.getLocalHost().getHostName();
                 if (isNotEmpty(hostName)) {
                     LOCAL_HOST = hostName;
                 }
             } catch (UnknownHostException e) {
-                LOG.error("get hostName error!", e);
+                LOG.error("Failed to get hostname", e);
             }
         }
     }
 
+    /**
+     * 获取本机hostname
+     * @return hostname
+     */
     public static String getLocalHost() {
         return LOCAL_HOST;
     }
 
 
+    /**
+     *
+     * @return
+     */
     public static String getFirstNoLoopBackIpv4Address() {
         Collection<String> allNoLoopBackIpv4Addresses = getNoLoopBackIpv4Addresses();
         if (allNoLoopBackIpv4Addresses.isEmpty()) {
@@ -108,6 +120,11 @@ public class IpUtil {
         }
     }
 
+    /**
+     * 根据主机名获取ip
+     * @param host host
+     * @return ip
+     */
     public static String getIpByHostName(String host) {
         InetAddress address = null;
         try {
@@ -130,17 +147,18 @@ public class IpUtil {
         return !isEmpty(cs);
     }
 
-    public static boolean isIp(String addr) {
-        if (addr.length() < 7 || addr.length() > 15 || "".equals(addr)) {
+    /**
+     * 是否是ipv4
+     * @param ip ip字符串
+     * @return boolean
+     */
+    public static boolean isIpv4(String ip) {
+        if (null == ip || ip.length() < 7 || ip.length() > 15) {
             return false;
         }
 
         Pattern pat = Pattern.compile(IP_REGEX);
 
-        Matcher mat = pat.matcher(addr);
-
-        boolean ipAddress = mat.find();
-
-        return ipAddress;
+        return pat.matcher(ip).find();
     }
 }

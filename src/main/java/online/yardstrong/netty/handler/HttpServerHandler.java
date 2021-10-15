@@ -4,7 +4,10 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.*;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
 import online.yardstrong.netty.config.CustomNettyConfig;
+import online.yardstrong.netty.utils.ExceptionUtil;
 
 /**
  * 业务处理器
@@ -13,7 +16,9 @@ import online.yardstrong.netty.config.CustomNettyConfig;
  * @author yardstrong
  */
 @ChannelHandler.Sharable
-public class CustomHttpHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+
+    private static final InternalLogger LOG = InternalLoggerFactory.getInstance(HttpServerHandler.class);
 
     public static ChannelHandler channelInitializer() {
         return new ChannelInitializer<SocketChannel>() {
@@ -24,7 +29,7 @@ public class CustomHttpHandler extends SimpleChannelInboundHandler<FullHttpReque
                         .addLast("decoder", new HttpRequestDecoder())
                         .addLast("encoder", new HttpResponseEncoder())
                         .addLast("aggregator", new HttpObjectAggregator(512 * 1024))
-                        .addLast("handler", new CustomHttpHandler());
+                        .addLast("handler", new HttpServerHandler());
             }
         };
     }
@@ -35,10 +40,9 @@ public class CustomHttpHandler extends SimpleChannelInboundHandler<FullHttpReque
      *
      * @param channelHandlerContext 上下文
      * @param fullHttpRequest       请求
-     * @throws Exception 异常
      */
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, FullHttpRequest fullHttpRequest) throws Exception {
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, FullHttpRequest fullHttpRequest) {
         DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
                 HttpResponseStatus.OK,
                 Unpooled.wrappedBuffer("{\"code\":200, \"message\": \"OK\"}".getBytes(CustomNettyConfig.DEFAULT_CHARSET)));
@@ -63,10 +67,11 @@ public class CustomHttpHandler extends SimpleChannelInboundHandler<FullHttpReque
      *
      * @param channelHandlerContext 上下文
      * @param cause                 异常
-     * @throws Exception 其他异常
      */
     @Override
-    public void exceptionCaught(ChannelHandlerContext channelHandlerContext, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext channelHandlerContext, Throwable cause) {
+        LOG.error(ExceptionUtil.translateToString(cause));
+
         DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
                 HttpResponseStatus.OK,
                 Unpooled.wrappedBuffer("{\"code\":500, \"message\": \"SERVER_INNER_ERROR\"}".getBytes(CustomNettyConfig.DEFAULT_CHARSET)));

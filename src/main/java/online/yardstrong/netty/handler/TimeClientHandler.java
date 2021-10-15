@@ -7,6 +7,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
+import online.yardstrong.netty.utils.ExceptionUtil;
 import online.yardstrong.netty.utils.NettyByteBufUtil;
 
 /**
@@ -18,35 +19,35 @@ import online.yardstrong.netty.utils.NettyByteBufUtil;
 @ChannelHandler.Sharable
 public class TimeClientHandler extends ChannelInboundHandlerAdapter {
 
-    private static final InternalLogger LOG = InternalLoggerFactory.getInstance(TimeServerHandler.class);
+    private static final InternalLogger LOG = InternalLoggerFactory.getInstance(TimeClientHandler.class);
 
-    public static ChannelHandler channelHandler() {
+    public static ChannelHandler channelInitializer() {
         return new ChannelInitializer<SocketChannel>() {
 
             @Override
-            protected void initChannel(SocketChannel ch) throws Exception {
+            protected void initChannel(SocketChannel ch) {
                 ch.pipeline().addLast(new TimeClientHandler());
             }
         };
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) {
         try {
-            System.out.println("Time: " + NettyByteBufUtil.readStringAndRelease((ByteBuf) msg));
+            LOG.info("Time: " + NettyByteBufUtil.readStringAndRelease((ByteBuf) msg));
         } finally {
             ReferenceCountUtil.release(msg);
         }
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    public void channelInactive(ChannelHandlerContext ctx) {
         ctx.channel().close();
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        cause.printStackTrace();
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        LOG.error(ExceptionUtil.translateToString(cause));
         ctx.close();
     }
 
@@ -59,15 +60,15 @@ public class TimeClientHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelWritabilityChanged(ChannelHandlerContext ctx) {
-        Channel ch = ctx.channel();
-        ChannelConfig config = ch.config();
+        Channel channel = ctx.channel();
+        ChannelConfig channelConfig = channel.config();
 
-        if (!ch.isWritable()) {
-            LOG.warn("{} is not writable, over high water level : {}", ch, config.getWriteBufferHighWaterMark());
-            config.setAutoRead(false);
+        if (!channel.isWritable()) {
+            LOG.warn("{} is not writable, over high water level : {}", channel, channelConfig.getWriteBufferHighWaterMark());
+            channelConfig.setAutoRead(false);
         } else {
-            LOG.warn("{} is writable, to low water : {}", ch, config.getWriteBufferLowWaterMark());
-            config.setAutoRead(true);
+            LOG.warn("{} is writable, to low water : {}", channel, channelConfig.getWriteBufferLowWaterMark());
+            channelConfig.setAutoRead(true);
         }
     }
 

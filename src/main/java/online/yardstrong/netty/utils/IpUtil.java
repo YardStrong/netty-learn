@@ -69,8 +69,8 @@ public class IpUtil {
 
 
     /**
-     *
-     * @return
+     * 获取第一个非环网卡
+     * @return IP
      */
     public static String getFirstNoLoopBackIpv4Address() {
         Collection<String> allNoLoopBackIpv4Addresses = getNoLoopBackIpv4Addresses();
@@ -80,6 +80,10 @@ public class IpUtil {
         return allNoLoopBackIpv4Addresses.iterator().next();
     }
 
+    /**
+     * 获取非环网卡
+     * @return IP
+     */
     public static Collection<String> getNoLoopBackIpv4Addresses() {
         Collection<String> noLoopBackIpv4Addresses = new ArrayList<>();
         Collection<InetAddress> allInetAddresses = getAllHostAddress();
@@ -100,6 +104,10 @@ public class IpUtil {
         return noLoopBackIpv4Addresses;
     }
 
+    /**
+     * 获取所有网卡address
+     * @return 地址
+     */
     public static Collection<InetAddress> getAllHostAddress() {
         try {
             Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();

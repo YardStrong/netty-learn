@@ -9,8 +9,9 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import online.yardstrong.netty.config.CustomNettyConfig;
-import online.yardstrong.netty.handler.CustomDiscardHandler;
-import online.yardstrong.netty.handler.CustomHttpHandler;
+import online.yardstrong.netty.handler.CustomServerHandler;
+import online.yardstrong.netty.handler.DiscardServerHandler;
+import online.yardstrong.netty.handler.HttpServerHandler;
 import online.yardstrong.netty.handler.TimeServerHandler;
 
 import java.util.concurrent.ThreadFactory;
@@ -73,21 +74,19 @@ public class NettyServerFactory {
             serverBootstrap.group(bossGroup, workerGroup)
                     .channel(nettyEpollEnable ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
                     /* port can be used soon after released */
-                    .option(ChannelOption.SO_REUSEADDR, true)
+                    .option(ChannelOption.SO_REUSEADDR, Boolean.TRUE)
                     /* init the server connectable queue */
                     .option(ChannelOption.SO_BACKLOG, 128)
                     /* whether keep alive */
-                    .childOption(ChannelOption.SO_KEEPALIVE, true)
+                    .childOption(ChannelOption.SO_KEEPALIVE, Boolean.TRUE)
                     /* whether tpc delay */
-                    .childOption(ChannelOption.TCP_NODELAY, true)
+                    .childOption(ChannelOption.TCP_NODELAY, Boolean.TRUE)
                     /* send buffer size */
                     .childOption(ChannelOption.SO_SNDBUF, 65535)
                     /* receive buffer size */
                     .childOption(ChannelOption.SO_RCVBUF, 65535)
                     /* child handler */
-                    .childHandler(channelHandler)
-                    /* open keep alive */
-                    .childOption(ChannelOption.SO_KEEPALIVE, Boolean.TRUE);
+                    .childHandler(channelHandler);
 
             // Bind and start to accept incoming connections.
             ChannelFuture channelFuture;
@@ -121,17 +120,22 @@ public class NettyServerFactory {
     }
 
 
-
-
-
-
     /**
      * http-server
      *
      * @param port port
      */
     public static void httpServer(int port) throws Exception {
-        startServer(CustomHttpHandler.channelInitializer(), port);
+        startServer(HttpServerHandler.channelInitializer(), port);
+    }
+
+    /**
+     * http-server
+     *
+     * @param port port
+     */
+    public static void customServer(int port) throws Exception {
+        startServer(CustomServerHandler.channelInitializer(), port);
     }
 
     /**
@@ -140,7 +144,7 @@ public class NettyServerFactory {
      * @param port port
      */
     public static void discordServer(int port) throws Exception {
-        startServer(CustomDiscardHandler.channelInitializer(), port);
+        startServer(DiscardServerHandler.channelInitializer(), port);
     }
 
     /**

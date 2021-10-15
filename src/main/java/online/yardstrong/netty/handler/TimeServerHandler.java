@@ -6,6 +6,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import online.yardstrong.netty.config.CustomNettyConfig;
+import online.yardstrong.netty.utils.ExceptionUtil;
 import online.yardstrong.netty.utils.NettyByteBufUtil;
 
 /**
@@ -30,7 +31,7 @@ public class TimeServerHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(ChannelHandlerContext ctx) {
         final ChannelFuture channelFuture = ctx.writeAndFlush(NettyByteBufUtil.write(
                 String.valueOf(System.currentTimeMillis()).getBytes(CustomNettyConfig.DEFAULT_CHARSET)));
         channelFuture.addListener(ChannelFutureListener.CLOSE);
@@ -38,7 +39,7 @@ public class TimeServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        LOG.error(ExceptionUtil.translateToString(cause));
         ctx.close();
     }
 

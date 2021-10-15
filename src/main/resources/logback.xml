@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="5 seconds">
-    <property name="default.logging.file" value="app.log" />
+    <property name="application.name" value="app" />
     <logger name="io.netty" level="WARN"/>
     <logger name="ch.qos.logback" level="WARN"/>
 
@@ -13,9 +13,9 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${logging.file:-${default.logging.file}}</File>
+        <File>${logging.dir:-target}/${application.name}.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${logging.file:-${default.logging.file}}.%d.%i.log
+            <fileNamePattern>${logging.dir:-target}/${application.name}.%d.%i.log
             </fileNamePattern>
             <maxHistory>30</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">

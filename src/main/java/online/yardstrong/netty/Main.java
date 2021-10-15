@@ -9,6 +9,6 @@ import online.yardstrong.netty.factory.NettyServerFactory;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        NettyServerFactory.httpServer(CustomNettyConfig.DEFAULT_PORT);
+        NettyServerFactory.customServer(CustomNettyConfig.DEFAULT_PORT);
     }
 }

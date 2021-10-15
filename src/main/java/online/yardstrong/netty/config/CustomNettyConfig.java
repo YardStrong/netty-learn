@@ -16,6 +16,11 @@ import java.nio.charset.StandardCharsets;
 public class CustomNettyConfig {
 
     /**
+     * property logback.configurationFile
+     */
+    public static final String LOGBACK_CONFIG_FILE = "logback.configurationFile";
+
+    /**
      * default charset
      */
     public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;

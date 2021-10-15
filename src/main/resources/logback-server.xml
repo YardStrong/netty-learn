@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="5 seconds">
-    <property name="application.name" value="app" />
+    <property name="application.name" value="server" />
     <logger name="io.netty" level="WARN"/>
     <logger name="ch.qos.logback" level="WARN"/>
 

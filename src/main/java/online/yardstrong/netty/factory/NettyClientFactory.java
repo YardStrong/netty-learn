@@ -7,7 +7,9 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import online.yardstrong.netty.config.CustomNettyConfig;
 import online.yardstrong.netty.handler.CustomClientHandler;
+import online.yardstrong.netty.utils.IpUtil;
 
 /**
  * Netty-Client
@@ -67,7 +69,8 @@ public class NettyClientFactory {
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        startCustomClient(CustomClientHandler.channelInitializer(), "127.0.0.1", 8080);
+
+    public static void customClient(String host, int port) throws Exception {
+        startCustomClient(CustomClientHandler.channelInitializer(), host, port);
     }
 }

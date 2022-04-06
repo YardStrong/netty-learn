@@ -9,11 +9,10 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import online.yardstrong.netty.config.CustomNettyConfig;
-import online.yardstrong.netty.handler.CustomServerHandler;
-import online.yardstrong.netty.handler.DiscardServerHandler;
-import online.yardstrong.netty.handler.HttpServerHandler;
-import online.yardstrong.netty.handler.TimeServerHandler;
+import online.yardstrong.netty.handler.*;
+import online.yardstrong.netty.utils.SSLContextUtil;
 
+import java.io.InputStream;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -22,9 +21,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author yardstrong
  */
-public class NettyServerFactory {
+public class NettyTCPServerFactory {
 
-    private static final InternalLogger LOG = InternalLoggerFactory.getInstance(NettyServerFactory.class);
+    private static final InternalLogger LOG = InternalLoggerFactory.getInstance(NettyTCPServerFactory.class);
 
     /**
      * 启动服务
@@ -63,8 +62,8 @@ public class NettyServerFactory {
         final boolean nettyEpollEnable = CustomNettyConfig.NETTY_EPOLL_ENABLE;
         LOG.info("Netty Epoll enable: {}", nettyEpollEnable);
         EventLoopGroup bossGroup = nettyEpollEnable ?
-                new EpollEventLoopGroup(1, workerThreadFactory) :
-                new NioEventLoopGroup(1, workerThreadFactory);
+                new EpollEventLoopGroup(1, bossThreadFactory) :
+                new NioEventLoopGroup(1, bossThreadFactory);
         EventLoopGroup workerGroup = nettyEpollEnable ?
                 new EpollEventLoopGroup(workerThreadsNumber, workerThreadFactory) :
                 new NioEventLoopGroup(workerThreadsNumber, workerThreadFactory);
@@ -130,7 +129,7 @@ public class NettyServerFactory {
     }
 
     /**
-     * http-server
+     * custom-server
      *
      * @param port port
      */
@@ -154,5 +153,27 @@ public class NettyServerFactory {
      */
     public static void timeServer(int port) throws Exception {
         startServer(TimeServerHandler.channelInitializer(), port);
+    }
+
+    /**
+     * tcp-server
+     *
+     * @param port port
+     */
+    public static void tcpServer(int port) throws Exception {
+        startServer(TCPServerHandler.channelInitializer(), port);
+    }
+
+    /**
+     * ssl tcp server
+     *
+     * @param port port
+     */
+    public static void sslServer(int port) throws Exception {
+        try (InputStream serverKey = NettyTCPServerFactory.class.getResourceAsStream("server_key.jks");
+             InputStream serverTrust = NettyTCPServerFactory.class.getResourceAsStream("server_trust.jks")) {
+            startServer(SSLServerHandler.channelInitializer(SSLContextUtil.initSSLContext(
+                    serverKey, serverTrust, "123456", "123456")), port);
+        }
     }
 }

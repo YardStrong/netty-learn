@@ -7,15 +7,19 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import online.yardstrong.netty.config.CustomNettyConfig;
 import online.yardstrong.netty.handler.CustomClientHandler;
-import online.yardstrong.netty.utils.IpUtil;
+import online.yardstrong.netty.handler.SSLClientHandler;
+import online.yardstrong.netty.handler.TCPClientHandler;
+import online.yardstrong.netty.utils.SSLContextUtil;
+
+import java.io.InputStream;
 
 /**
  * Netty-Client
+ *
  * @author yardstrong
  */
-public class NettyClientFactory {
+public class NettyTCPClientFactory {
 
     /**
      * 启动Netty客户端
@@ -24,7 +28,7 @@ public class NettyClientFactory {
      * @param host           host
      * @param port           port
      */
-    private static void startTimeClient(ChannelHandler channelHandler, String host, int port) throws Exception {
+    private static void startSocketClient(ChannelHandler channelHandler, String host, int port) throws Exception {
         EventLoopGroup group = new NioEventLoopGroup();
         try {
             Bootstrap bootstrap = new Bootstrap();
@@ -70,7 +74,39 @@ public class NettyClientFactory {
     }
 
 
+    /**
+     * custom client
+     *
+     * @param host host
+     * @param port port
+     * @throws Exception error
+     */
     public static void customClient(String host, int port) throws Exception {
         startCustomClient(CustomClientHandler.channelInitializer(), host, port);
+    }
+
+    /**
+     * tcp client
+     *
+     * @param host host
+     * @param port port
+     * @throws Exception error
+     */
+    public static void tcpClient(String host, int port) throws Exception {
+        startSocketClient(TCPClientHandler.channelInitializer(), host, port);
+    }
+
+    /**
+     * ssl tcp client
+     *
+     * @param host host
+     * @param port port
+     */
+    public static void sslClient(String host, int port) throws Exception {
+        try (InputStream clientKey = NettyTCPServerFactory.class.getResourceAsStream("client_key.jks");
+             InputStream clientTrust = NettyTCPServerFactory.class.getResourceAsStream("client_trust.jks")) {
+            startSocketClient(SSLClientHandler.channelInitializer(SSLContextUtil.initSSLContext(
+                    clientKey, clientTrust, "123456", "123456")), host, port);
+        }
     }
 }

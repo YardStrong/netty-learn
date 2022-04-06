@@ -10,7 +10,7 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
 import online.yardstrong.netty.utils.ExceptionUtil;
 
 /**
- * Discard server （接收到什么抛弃什么）
+ * Discard server （接收到什么返回什么）
  *
  * @author yardstrong
  */

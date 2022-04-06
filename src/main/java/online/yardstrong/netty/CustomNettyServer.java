@@ -1,7 +1,7 @@
 package online.yardstrong.netty;
 
 import online.yardstrong.netty.config.CustomNettyConfig;
-import online.yardstrong.netty.factory.NettyServerFactory;
+import online.yardstrong.netty.factory.NettyTCPServerFactory;
 
 import java.util.Objects;
 
@@ -13,12 +13,12 @@ import java.util.Objects;
 public class CustomNettyServer {
 
     public static void main(String[] args) throws Exception {
-        if (System.getProperties().containsKey(CustomNettyConfig.LOGBACK_CONFIG_FILE)) {
+        if (!System.getProperties().containsKey(CustomNettyConfig.LOGBACK_CONFIG_FILE)) {
             System.setProperty(CustomNettyConfig.LOGBACK_CONFIG_FILE,
                     Objects.requireNonNull(
                             CustomNettyServer.class.getClassLoader().getResource("logback-server.xml")
                     ).getPath());
         }
-        NettyServerFactory.customServer(CustomNettyConfig.DEFAULT_PORT);
+        NettyTCPServerFactory.sslServer(CustomNettyConfig.DEFAULT_PORT);
     }
 }

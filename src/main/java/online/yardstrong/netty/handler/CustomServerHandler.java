@@ -12,7 +12,6 @@ import online.yardstrong.netty.codec.CustomDataEncoder;
 import online.yardstrong.netty.codec.CustomDataV1;
 
 import java.net.SocketAddress;
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 /**

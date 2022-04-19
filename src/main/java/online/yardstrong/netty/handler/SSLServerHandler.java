@@ -60,6 +60,11 @@ public class SSLServerHandler extends SimpleChannelInboundHandler<String> {
     }
 
     @Override
+    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+        LOG.info("Lost client: {}", ctx.channel().remoteAddress());
+    }
+
+    @Override
     public void channelWritabilityChanged(ChannelHandlerContext ctx) {
         Channel channel = ctx.channel();
         ChannelConfig channelConfig = channel.config();

@@ -19,6 +19,6 @@ public class CustomNettyServer {
                             CustomNettyServer.class.getClassLoader().getResource("logback-server.xml")
                     ).getPath());
         }
-        NettyTCPServerFactory.sslServer(CustomNettyConfig.DEFAULT_PORT);
+        NettyTCPServerFactory.tcpServer(CustomNettyConfig.DEFAULT_PORT);
     }
 }

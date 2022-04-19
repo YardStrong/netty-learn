@@ -2,7 +2,6 @@ package online.yardstrong.netty;
 
 import online.yardstrong.netty.config.CustomNettyConfig;
 import online.yardstrong.netty.factory.NettyTCPClientFactory;
-import online.yardstrong.netty.utils.IpUtil;
 
 import java.util.Objects;
 
@@ -20,6 +19,6 @@ public class CustomNettyClient {
                             CustomNettyServer.class.getClassLoader().getResource("logback-client.xml")
                     ).getPath());
         }
-        NettyTCPClientFactory.sslClient(IpUtil.getFirstNoLoopBackIpv4Address(), CustomNettyConfig.DEFAULT_PORT);
+        NettyTCPClientFactory.tcpClient("localhost", CustomNettyConfig.DEFAULT_PORT);
     }
 }

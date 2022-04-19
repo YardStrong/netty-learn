@@ -170,10 +170,10 @@ public class NettyTCPServerFactory {
      * @param port port
      */
     public static void sslServer(int port) throws Exception {
-        try (InputStream serverKey = NettyTCPServerFactory.class.getResourceAsStream("server_key.jks");
-             InputStream serverTrust = NettyTCPServerFactory.class.getResourceAsStream("server_trust.jks")) {
-            startServer(SSLServerHandler.channelInitializer(SSLContextUtil.initSSLContext(
-                    serverKey, serverTrust, "123456", "123456")), port);
+        try (InputStream serverKey = NettyTCPServerFactory.class.getResourceAsStream("ssl/server.keytab");
+             InputStream serverTrust = NettyTCPServerFactory.class.getResourceAsStream("ssl/server.keytab")) {
+            startServer(SSLServerHandler.channelInitializer(SSLContextUtil.initSSLContextDoubleAuth(
+                    serverKey, serverTrust, "serverPassDemo", "serverPassDemo")), port);
         }
     }
 }

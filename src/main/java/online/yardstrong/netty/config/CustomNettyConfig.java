@@ -48,7 +48,7 @@ public class CustomNettyConfig {
     /**
      * number of netty worker threads
      */
-    public static final int WORKER_THREADS_NUMBER = SystemPropertyUtil.getInt("io.netty.eventLoopThreads", CPUS);
+    public static final int WORKER_THREADS_NUMBER = SystemPropertyUtil.getInt("io.netty.eventLoopThreads", 1);
 
     /**
      * about： epoll、select、poll(blocking)

@@ -43,7 +43,7 @@ public class SSLContextUtil {
      * @param storePassword store password
      * @return ssl context
      */
-    public static SSLContext initSSLContext(InputStream keystoreJKS, InputStream truststoreJKS,
+    public static SSLContext initSSLContextDoubleAuth(InputStream keystoreJKS, InputStream truststoreJKS,
                                             String keyPassword, String storePassword) {
         try {
             // keystore
@@ -64,6 +64,32 @@ public class SSLContextUtil {
             SSLContext sslContext = SSLContext.getInstance(PROTOCOL);
             sslContext.init(keyManagerfactory.getKeyManagers(),
                     trustManagerFactory.getTrustManagers(), null);
+            return sslContext;
+        } catch (Exception e) {
+            LOG.error("Fail to init ssl context", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Init ssh context
+     *
+     * @param keystoreJKS   keystore
+     * @param keyPassword   key password
+     * @return ssl context
+     */
+    public static SSLContext initSSLContextSingleAuth(InputStream keystoreJKS, String keyPassword) {
+        try {
+            // keystore
+            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keyStore.load(keystoreJKS, keyPassword.toCharArray());
+            KeyManagerFactory keyManagerfactory =
+                    KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            keyManagerfactory.init(keyStore, keyPassword.toCharArray());
+
+            // init ssl context
+            SSLContext sslContext = SSLContext.getInstance(PROTOCOL);
+            sslContext.init(keyManagerfactory.getKeyManagers(), null, null);
             return sslContext;
         } catch (Exception e) {
             LOG.error("Fail to init ssl context", e);

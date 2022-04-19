@@ -3,6 +3,8 @@ package online.yardstrong.netty.utils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * @author yardstrong
  */
@@ -39,5 +41,18 @@ public class NettyByteBufUtil {
      */
     public static ByteBuf write(byte[] data) {
         return Unpooled.copiedBuffer(data);
+    }
+
+    /**
+     * 写入ByteBuf
+     *
+     * @param data byte[]
+     * @return ByteBuf
+     */
+    public static ByteBuf write(String data) {
+        if (!data.endsWith("\n")) {
+            data += "\n";
+        }
+        return write(data.getBytes(StandardCharsets.UTF_8));
     }
 }

@@ -10,8 +10,8 @@ import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import online.yardstrong.netty.config.CustomNettyConfig;
 import online.yardstrong.netty.handler.*;
-import online.yardstrong.netty.utils.SSLContextUtil;
 
+import javax.net.ssl.SSLContext;
 import java.io.InputStream;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -78,7 +78,7 @@ public class NettyTCPServerFactory {
                     .option(ChannelOption.SO_BACKLOG, 128)
                     /* whether keep alive */
                     .childOption(ChannelOption.SO_KEEPALIVE, Boolean.TRUE)
-                    /* whether tpc delay */
+                    /* whether tcp delay */
                     .childOption(ChannelOption.TCP_NODELAY, Boolean.TRUE)
                     /* send buffer size */
                     .childOption(ChannelOption.SO_SNDBUF, 65535)
@@ -170,10 +170,12 @@ public class NettyTCPServerFactory {
      * @param port port
      */
     public static void sslServer(int port) throws Exception {
-        try (InputStream serverKey = NettyTCPServerFactory.class.getResourceAsStream("ssl/server.keytab");
-             InputStream serverTrust = NettyTCPServerFactory.class.getResourceAsStream("ssl/server.keytab")) {
-            startServer(SSLServerHandler.channelInitializer(SSLContextUtil.initSSLContextDoubleAuth(
-                    serverKey, serverTrust, "serverPassDemo", "serverPassDemo")), port);
+        SSLContext sslContext;
+        try (InputStream key = SslContextFactory.class.getClassLoader().getResourceAsStream("ssl/server.jks");
+             InputStream trust = SslContextFactory.class.getClassLoader().getResourceAsStream("ssl/server.jks")) {
+            sslContext = SslContextFactory.getServerContext(
+                    key, trust, "serverPassDemo", "serverPassDemo");
         }
+        startServer(SSLServerHandler.channelInitializer(sslContext), port);
     }
 }

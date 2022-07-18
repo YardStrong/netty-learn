@@ -10,8 +10,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import online.yardstrong.netty.handler.CustomClientHandler;
 import online.yardstrong.netty.handler.SSLClientHandler;
 import online.yardstrong.netty.handler.TCPClientHandler;
-import online.yardstrong.netty.utils.SSLContextUtil;
 
+import javax.net.ssl.SSLContext;
 import java.io.InputStream;
 
 /**
@@ -103,10 +103,12 @@ public class NettyTCPClientFactory {
      * @param port port
      */
     public static void sslClient(String host, int port) throws Exception {
-        try (InputStream clientKey = NettyTCPServerFactory.class.getResourceAsStream("ssl/client.keytab");
-             InputStream clientTrust = NettyTCPServerFactory.class.getResourceAsStream("ssl/client.keytab")) {
-            startSocketClient(SSLClientHandler.channelInitializer(SSLContextUtil.initSSLContextDoubleAuth(
-                    clientKey, clientTrust, "clientPassDemo", "clientPassDemo")), host, port);
+        SSLContext sslContext;
+        try (InputStream key = SslContextFactory.class.getClassLoader().getResourceAsStream("ssl/client.jks");
+             InputStream trust = SslContextFactory.class.getClassLoader().getResourceAsStream("ssl/client.jks")) {
+            sslContext = SslContextFactory.getClientContext(
+                    key, trust, "clientPassDemo", "clientPassDemo");
         }
+        startSocketClient(SSLClientHandler.channelInitializer(sslContext), host, port);
     }
 }

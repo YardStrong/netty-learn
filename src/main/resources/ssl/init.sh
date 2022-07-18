@@ -1,18 +1,18 @@
 
-#生成Netty服务端私钥和证书仓库命令：
-keytool -genkey -alias securechat -keysize 2048 -validity 365 -keyalg RSA -dname "CN=localhost" -keypass serverPassDemo -storepass serverPassDemo -keystore server.keytab
+# 1.生成Netty服务端私钥和证书仓库命令：
+keytool -genkey -alias serverAlias -keysize 2048 -validity 365 -keyalg RSA -dname "CN=localhost" -keypass serverPassDemo -storepass serverPassDemo -keystore server.jks
 
-#生成Netty服务端自签名证书：
-keytool -export -alias securechat -keystore server.keytab -storepass serverPassDemo -file server.cert
+# 2.生成Netty服务端自签名证书：
+keytool -export -alias serverAlias -keystore server.jks -storepass serverPassDemo -file server.cer
 
-#生成客户端的密钥对和证书仓库：
-keytool -genkey -alias smcc -keysize 2048 -validity 365 -keyalg RSA -dname "CN=localhost" -keypass clientPassDemo -storepass clientPassDemo -keystore client.keytab
+# 3.生成客户端的密钥对和证书仓库：
+keytool -genkey -alias clientAlias -keysize 2048 -validity 365 -keyalg RSA -dname "CN=localhost" -keypass clientPassDemo -storepass clientPassDemo -keystore client.jks
 
-#将Netty服务端的证书导入到客户端的证书仓库：
-keytool -import -trustcacerts -alias securechat -file server.cert -storepass clientPassDemo -keystore client.keytab
+# 4.将Netty服务端的证书导入到客户端的证书仓库：
+keytool -import -trustcacerts -alias serverAlias -file server.cer -storepass clientPassDemo -keystore client.jks
 
-# 生成客户端的自签名证书
-keytool -export -alias smcc -keystore client.keytab -storepass clientPassDemo -file client.cert
+# 5.生成客户端的自签名证书
+keytool -export -alias clientAlias -keystore client.jks -storepass clientPassDemo -file client.cer
 
-#将客户端的自签名证书导入到服务端的信任证书仓库
-keytool -import -trustcacerts -alias smcc -file client.cert -storepass serverPassDemo -keystore server.keytab
+# 6.将客户端的自签名证书导入到服务端的信任证书仓库
+keytool -import -trustcacerts -alias clientAlias -file client.cer -storepass serverPassDemo -keystore server.jks

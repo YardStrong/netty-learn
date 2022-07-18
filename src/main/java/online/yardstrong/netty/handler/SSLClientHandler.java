@@ -34,7 +34,7 @@ public class SSLClientHandler extends SimpleChannelInboundHandler<String> {
 
                 ChannelPipeline pipeline = socketChannel.pipeline();
 
-                pipeline.addLast(new SslHandler(engine));
+                pipeline.addFirst("ssl", new SslHandler(engine));
                 pipeline.addLast(new LineBasedFrameDecoder(1024));
                 pipeline.addLast(new StringDecoder(StandardCharsets.UTF_8));
                 pipeline.addLast(new SSLClientHandler());
@@ -60,11 +60,11 @@ public class SSLClientHandler extends SimpleChannelInboundHandler<String> {
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, String message) throws Exception {
         LOG.info("{}> {}", channelHandlerContext.channel().remoteAddress(), message);
         if ("hostname".equals(message.trim())) {
-            channelHandlerContext.writeAndFlush(NettyByteBufUtil.write(
-                    IpUtil.getLocalHost().getBytes(CustomNettyConfig.DEFAULT_CHARSET)));
+            LOG.info("hostname-------------" + IpUtil.getLocalHost());
+            channelHandlerContext.writeAndFlush(NettyByteBufUtil.write(IpUtil.getLocalHost()));
         } else if ("date".equals(message.trim())) {
-            channelHandlerContext.writeAndFlush(NettyByteBufUtil.write(
-                    new Date().toString().getBytes(CustomNettyConfig.DEFAULT_CHARSET)));
+            LOG.info("date-------------" + new Date().toString());
+            channelHandlerContext.writeAndFlush(NettyByteBufUtil.write(new Date().toString()));
         }
     }
 

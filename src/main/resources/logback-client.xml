@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="5 seconds">
     <property name="application.name" value="client" />
-    <logger name="io.netty" level="WARN"/>
-    <logger name="ch.qos.logback" level="WARN"/>
+<!--    <logger name="io.netty" level="WARN"/>-->
+<!--    <logger name="ch.qos.logback" level="WARN"/>-->
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
@@ -30,7 +30,7 @@
         </encoder>
     </appender>
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="STDOUT"/>
 <!--        <appender-ref ref="FILE"/>-->
     </root>

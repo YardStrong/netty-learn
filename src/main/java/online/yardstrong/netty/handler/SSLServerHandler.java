@@ -33,10 +33,11 @@ public class SSLServerHandler extends SimpleChannelInboundHandler<String> {
 
                 SSLEngine engine = sslContext.createSSLEngine();
                 engine.setUseClientMode(false);
+                engine.setNeedClientAuth(true);
 
                 ChannelPipeline pipeline = socketChannel.pipeline();
 
-                pipeline.addLast(new SslHandler(engine));
+                pipeline.addLast("ssl", new SslHandler(engine));
                 pipeline.addLast(new LineBasedFrameDecoder(1024));
                 pipeline.addLast(new StringDecoder(StandardCharsets.UTF_8));
                 pipeline.addLast(new SSLServerHandler());
@@ -57,6 +58,11 @@ public class SSLServerHandler extends SimpleChannelInboundHandler<String> {
                         .getBytes(CustomNettyConfig.DEFAULT_CHARSET)));
             }
         }, 0, 60000);
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        LOG.info("Lost client: {}", ctx.channel().remoteAddress());
     }
 
     @Override

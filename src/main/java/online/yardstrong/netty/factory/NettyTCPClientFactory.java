@@ -102,12 +102,12 @@ public class NettyTCPClientFactory {
      * @param host host
      * @param port port
      */
-    public static void sslClient(String host, int port) throws Exception {
+    public static void sslClient(String host, int port, boolean mutualAuth) throws Exception {
         SSLContext sslContext;
         try (InputStream key = SslContextFactory.class.getClassLoader().getResourceAsStream("ssl/client.jks");
              InputStream trust = SslContextFactory.class.getClassLoader().getResourceAsStream("ssl/client.jks")) {
             sslContext = SslContextFactory.getClientContext(
-                    key, trust, "clientPassDemo", "clientPassDemo");
+                    mutualAuth ? key : null, trust, "clientKeyPassDemo", "clientStorePassDemo", mutualAuth);
         }
         startSocketClient(SSLClientHandler.channelInitializer(sslContext), host, port);
     }

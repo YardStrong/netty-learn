@@ -26,14 +26,20 @@ public class SSLServerHandler extends SimpleChannelInboundHandler<String> {
 
     private static final InternalLogger LOG = InternalLoggerFactory.getInstance(SSLServerHandler.class);
 
-    public static ChannelHandler channelInitializer(SSLContext sslContext) {
+    public static ChannelHandler channelInitializer(SSLContext sslContext, boolean mutualAuth) {
         return new ChannelInitializer<SocketChannel>() {
             @Override
             protected void initChannel(SocketChannel socketChannel) {
 
                 SSLEngine engine = sslContext.createSSLEngine();
                 engine.setUseClientMode(false);
-                engine.setNeedClientAuth(true);
+                if (mutualAuth) {
+                    // 双向认证
+                    engine.setNeedClientAuth(true);
+                } else {
+                    // 单向认证
+                    engine.setNeedClientAuth(false);
+                }
 
                 ChannelPipeline pipeline = socketChannel.pipeline();
 
@@ -48,14 +54,12 @@ public class SSLServerHandler extends SimpleChannelInboundHandler<String> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         LOG.info("New client: {}", ctx.channel().remoteAddress());
-        ctx.writeAndFlush(NettyByteBufUtil.write("hostname\n"
-                .getBytes(CustomNettyConfig.DEFAULT_CHARSET)));
+        ctx.writeAndFlush(NettyByteBufUtil.write("hostname\n".getBytes(CustomNettyConfig.DEFAULT_CHARSET)));
 
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                ctx.writeAndFlush(NettyByteBufUtil.write("date\n"
-                        .getBytes(CustomNettyConfig.DEFAULT_CHARSET)));
+                ctx.writeAndFlush(NettyByteBufUtil.write("date\n".getBytes(CustomNettyConfig.DEFAULT_CHARSET)));
             }
         }, 0, 60000);
     }

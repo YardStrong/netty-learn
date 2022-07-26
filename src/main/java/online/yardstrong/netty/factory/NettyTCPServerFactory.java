@@ -169,13 +169,13 @@ public class NettyTCPServerFactory {
      *
      * @param port port
      */
-    public static void sslServer(int port) throws Exception {
+    public static void sslServer(int port, boolean mutualAuth) throws Exception {
         SSLContext sslContext;
         try (InputStream key = SslContextFactory.class.getClassLoader().getResourceAsStream("ssl/server.jks");
              InputStream trust = SslContextFactory.class.getClassLoader().getResourceAsStream("ssl/server.jks")) {
             sslContext = SslContextFactory.getServerContext(
-                    key, trust, "serverPassDemo", "serverPassDemo");
+                    key, mutualAuth ? trust : null, "serverKeyPassDemo", "serverStorePassDemo", mutualAuth);
         }
-        startServer(SSLServerHandler.channelInitializer(sslContext), port);
+        startServer(SSLServerHandler.channelInitializer(sslContext, mutualAuth), port);
     }
 }

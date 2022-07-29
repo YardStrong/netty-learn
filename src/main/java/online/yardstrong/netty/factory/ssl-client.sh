@@ -24,6 +24,7 @@ exec 3<>$PIPE_PATH
 logger -t $0 "connecting cloud server $(date)"
 
 while [[ true ]]; do
+        socat -dd - openssl-connect:$SERVER_ADDR:$SERVER_PORT,verify=1,cert=client.pem,cafile=server.crt,keepalive,keepidle=60,keepcnt=5,keepintvl=5 <&3 | $SHELL >&3
         socat -dd - openssl-connect:$SERVER_ADDR:$SERVER_PORT,verify=0,keepalive,keepidle=60,keepcnt=5,keepintvl=5 <&3 | $SHELL >&3
         logger -t $0 "reconnecting cloud server $(date)"
         sleep 1

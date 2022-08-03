@@ -6,7 +6,6 @@ import io.netty.handler.codec.LineBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
-import online.yardstrong.netty.config.CustomNettyConfig;
 import online.yardstrong.netty.utils.IpUtil;
 import online.yardstrong.netty.utils.NettyByteBufUtil;
 

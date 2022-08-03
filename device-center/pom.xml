@@ -2,26 +2,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>netty-learn</artifactId>
+        <groupId>online.yardstrong.netty</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>online.yardstrong.netty</groupId>
-    <artifactId>netty-learn</artifactId>
-    <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <modules>
-        <module>netty-connector</module>
-        <module>device-center</module>
-    </modules>
+    <artifactId>device-center</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <logback.version>1.0.7</logback.version>
-        <slf4j-api.version>1.7.32</slf4j-api.version>
-        <netty.version>4.1.68.Final</netty.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>online.yardstrong.netty</groupId>
+            <artifactId>netty-connector</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>

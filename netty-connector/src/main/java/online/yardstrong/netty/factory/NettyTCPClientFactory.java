@@ -8,8 +8,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import online.yardstrong.netty.handler.CustomClientHandler;
-import online.yardstrong.netty.handler.SSLClientHandler;
 import online.yardstrong.netty.handler.TCPClientHandler;
+import online.yardstrong.netty.handler.SSLClientHandler;
 
 import javax.net.ssl.SSLContext;
 import java.io.InputStream;

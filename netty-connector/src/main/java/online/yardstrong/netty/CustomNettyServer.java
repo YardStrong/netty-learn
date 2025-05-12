@@ -14,10 +14,7 @@ public class CustomNettyServer {
 
     public static void main(String[] args) throws Exception {
         if (!System.getProperties().containsKey(CustomNettyConfig.LOGBACK_CONFIG_FILE)) {
-            System.setProperty(CustomNettyConfig.LOGBACK_CONFIG_FILE,
-                    Objects.requireNonNull(
-                            CustomNettyServer.class.getClassLoader().getResource("logback-server.xml")
-                    ).getPath());
+            System.setProperty(CustomNettyConfig.LOGBACK_CONFIG_FILE, "classpath:config/logback-server.xml");
         }
         NettyTCPServerFactory.sslServer(CustomNettyConfig.DEFAULT_PORT, false);
     }

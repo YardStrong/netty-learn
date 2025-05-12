@@ -1,0 +1,1 @@
+java -cp "target/netty-connector-packages/libs/*" online.yardstrong.netty.CustomNettyServer

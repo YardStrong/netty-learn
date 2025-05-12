@@ -9,7 +9,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import online.yardstrong.netty.config.CustomNettyConfig;
-import netty.handler.*;
 import online.yardstrong.netty.handler.*;
 
 import javax.net.ssl.SSLContext;

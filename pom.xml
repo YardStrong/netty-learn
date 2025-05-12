@@ -16,6 +16,7 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
         <logback.version>1.0.7</logback.version>
         <slf4j-api.version>1.7.32</slf4j-api.version>
         <netty.version>4.1.68.Final</netty.version>

@@ -14,10 +14,7 @@ import java.util.Objects;
 public class CustomNettyClient {
     public static void main(String[] args) throws Exception {
         if (!System.getProperties().containsKey(CustomNettyConfig.LOGBACK_CONFIG_FILE)) {
-            System.setProperty(CustomNettyConfig.LOGBACK_CONFIG_FILE,
-                    Objects.requireNonNull(
-                            CustomNettyServer.class.getClassLoader().getResource("logback-client.xml")
-                    ).getPath());
+            System.setProperty(CustomNettyConfig.LOGBACK_CONFIG_FILE, "classpath:config/logback-client.xml");
         }
         NettyTCPClientFactory.sslClient("localhost", CustomNettyConfig.DEFAULT_PORT, false);
     }

@@ -23,6 +23,15 @@ pipeline {
         }
     }
     stages {
+        stage('Clone repository') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']],
+                        extensions: [cloneOption(depth: 1, noTags: true, reference: '', shallow: true)],
+                        userRemoteConfigs: [[credentialsId: 'git_rsa', url: 'git@gitee.com:YardStrong/netty-learn.git']]
+                )
+            }
+        }
+
         stage('Run compile') {
             steps {
                 container('maven') {

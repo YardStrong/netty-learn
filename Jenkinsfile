@@ -13,6 +13,8 @@ pipeline {
                     args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
                   - name: maven
                     image: maven:3.8.4-jdk-8
+                    command:
+                      - cat
                     volumeMounts:
                     - name: maven-settings
                       mountPath: /home/jenkins/agent/maven/conf/

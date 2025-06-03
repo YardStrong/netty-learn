@@ -20,10 +20,7 @@ pipeline {
                                     value: '-Dmaven.repo.local=/usr/share/maven/ref/repository -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
                             )
                     ],
-                    volumeMounts: [
-                            // 挂载 settings.xml 到容器内
-                            volumeMount(mountPath: '/root/.m2/settings.xml', name: 'maven-settings', subPath: 'settings.xml')
-                    ],
+                    configMapVolume mountPath: '/root/.m2/', name: 'jenkins-maven-settings',
                     resourceRequestCpu: '500m',
                     resourceLimitCpu: '2000m',
                     resourceRequestMemory: '1Gi',

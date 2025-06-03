@@ -15,7 +15,7 @@ pipeline {
                     image: maven:3.8.4-jdk-8
                     volumeMounts:
                     - name: maven-settings
-                      mountPath: /root/maven/conf/
+                      mountPath: /home/jenkins/agent/maven/conf/
                   volumes:
                   - name: maven-settings
                     configMap:
@@ -25,12 +25,16 @@ pipeline {
         }
     }
     stages {
+        stage('Add mirror') {
+            steps {
+                sh 'shoami'
+                sh 'ln -s /home/jenkins/agent/maven/conf//maven/conf/settings.xml /root/.m2/settings.xml'
+                sh 'ls /root/.m2/*'
+            }
+        }
         stage('Run compile') {
             steps {
                 container('maven') {
-                    sh 'shoami'
-                    sh 'ln -s /root/maven/conf/settings.xml /root/.m2/settings.xml'
-                    sh 'ls /root/.m2/*'
                     sh 'mvn clean compile'
                 }
             }

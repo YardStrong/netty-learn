@@ -27,13 +27,6 @@ pipeline {
         }
     }
     stages {
-        stage('Add mirror') {
-            steps {
-                sh 'shoami'
-                sh 'ln -s /home/jenkins/agent/maven/conf/maven/conf/settings.xml /root/.m2/settings.xml'
-                sh 'ls /root/.m2/*'
-            }
-        }
         stage('Run compile') {
             steps {
                 container('maven') {

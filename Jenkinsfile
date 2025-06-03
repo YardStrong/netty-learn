@@ -4,28 +4,23 @@ pipeline {
             cloud 'devops-k8s'
             namespace 'devops-jenkins'
             agentInjection false
-            containerTemplate(
-                    name: 'jnlp',
-                    image: 'jenkins/inbound-agent:3309.v27b_9314fd1a_4-1',
-                    args: '${computer.jnlpmac} ${computer.name}'
-            )
-            containerTemplate(
-                    name: 'maven',
-                    image: 'maven:3.8.6-jdk-8',
-                    ttyEnabled: true,
-                    command: 'cat',
-                    envVars: [
-                            envVar(
-                                    key: 'MAVEN_OPTS',
-                                    value: '-Dmaven.repo.local=/usr/share/maven/ref/repository -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
-                            )
-                    ],
-                    resourceRequestCpu: '500m',
-                    resourceLimitCpu: '2000m',
-                    resourceRequestMemory: '1Gi',
-                    resourceLimitMemory: '4Gi'
-            )
-            configMapVolume(configMapName: 'jenkins-maven-settings', mountPath: '/root/.m2/')
+            yaml """
+                kind: Pod
+                spec:
+                  containers:
+                  - name: jnlp
+                    image: jenkins/inbound-agent:3309.v27b_9314fd1a_4-1
+                    args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
+                  - name: maven
+                    image: maven:3.8.4-jdk-8
+                    volumeMounts:
+                    - name: maven-settings
+                      mountPath: /root/.m2/
+                  volumes:
+                  - name: maven-settings
+                    configMap:
+                      name: jenkins-maven-settings
+            """
             retries 1
         }
     }
@@ -33,6 +28,8 @@ pipeline {
         stage('Run compile') {
             steps {
                 container('maven') {
+                    sh 'shoami'
+                    sh 'ls /root/.m2/*'
                     sh 'mvn clean compile'
                 }
             }

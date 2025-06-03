@@ -14,6 +14,16 @@ pipeline {
                     image: 'maven:3.8.6-jdk-8',
                     ttyEnabled: true,
                     command: 'cat',
+                    envVars: [
+                            envVar(
+                                    key: 'MAVEN_OPTS',
+                                    value: '-Dmaven.repo.local=/usr/share/maven/ref/repository -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
+                            ),
+                            envVar(
+                                    key: 'MAVEN_MIRROR_URL',
+                                    value: 'https://maven.aliyun.com/repository/public/'
+                            )
+                    ],
                     resourceRequestCpu: '500m',
                     resourceLimitCpu: '2000m',
                     resourceRequestMemory: '1Gi',

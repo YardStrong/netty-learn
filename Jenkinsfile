@@ -23,7 +23,7 @@ pipeline {
                     volumeMounts: [
                             // 挂载 settings.xml 到容器内
                             volumeMount(mountPath: '/root/.m2/settings.xml', name: 'maven-settings', subPath: 'settings.xml')
-                    ]
+                    ],
                     resourceRequestCpu: '500m',
                     resourceLimitCpu: '2000m',
                     resourceRequestMemory: '1Gi',

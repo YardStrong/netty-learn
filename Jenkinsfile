@@ -20,12 +20,12 @@ pipeline {
                                     value: '-Dmaven.repo.local=/usr/share/maven/ref/repository -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
                             )
                     ],
-                    configMapVolume(configMapName: 'jenkins-maven-settings', mountPath: '/root/.m2/'),
                     resourceRequestCpu: '500m',
                     resourceLimitCpu: '2000m',
                     resourceRequestMemory: '1Gi',
                     resourceLimitMemory: '4Gi'
             )
+            configMapVolume(configMapName: 'jenkins-maven-settings', mountPath: '/root/.m2/')
             retries 1
         }
     }

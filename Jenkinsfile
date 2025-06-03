@@ -13,15 +13,28 @@ pipeline {
                     args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
                   - name: maven
                     image: maven:3.8.4-jdk-8
-                    command:
-                      - cat
+                    command: ["cat"]
+                    tty: true
                     volumeMounts:
                     - name: maven-settings
-                      mountPath: /home/jenkins/agent/maven/conf/
+                      mountPath: /root/.m2/settings.xml
+                      subPath: settings.xml
+                      readOnly: true
                   volumes:
                   - name: maven-settings
                     configMap:
                       name: jenkins-maven-settings
+                      items:
+                      - key: settings.xml
+                        path: settings.xml
+                  resources:
+                    requests:
+                      memory: "1Gi"
+                      cpu: "500m"
+                    limits:
+                      memory: "2Gi"
+                      cpu: "1"
+                  restartPolicy: Never
             """
             retries 1
         }

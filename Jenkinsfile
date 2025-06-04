@@ -28,7 +28,6 @@ pipeline {
                     configMap:
                       name: jenkins-maven-settings
             """
-            retries 1
         }
     }
     stages {

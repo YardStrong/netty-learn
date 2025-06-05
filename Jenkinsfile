@@ -1,32 +1,22 @@
 pipeline {
     agent {
         kubernetes {
-            cloud 'devops-k8s'
-            namespace 'devops-jenkins'
+            cloud 'kubernetes'
+            namespace 'jenkins'
             agentInjection false
             yaml """
                 kind: Pod
                 spec:
                   containers:
                   - name: jnlp
-                    image: jenkins/inbound-agent:3309.v27b_9314fd1a_4-1
+                    image: docker.1ms.run/jenkins/inbound-agent:latest
                     args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
                   - name: maven
-                    image: maven:3.8.4-jdk-8
+                    image: docker.1ms.run/maven:3.8.2-openjdk-8
                     command: ['sh', '-c']
                     args:
-                    - |
-                      ln -s /home/jenkins/agent/maven/config/settings.xml /root/.m2/settings.xml
-                      cat
+                    - cat
                     tty: true
-                    volumeMounts:
-                    - name: maven-config
-                      mountPath: /home/jenkins/agent/maven/config
-                      readOnly: true
-                  volumes:
-                  - name: maven-config
-                    configMap:
-                      name: jenkins-maven-settings
             """
         }
     }

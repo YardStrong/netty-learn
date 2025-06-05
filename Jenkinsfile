@@ -9,7 +9,7 @@ pipeline {
                 spec:
                   containers:
                   - name: jnlp
-                    image: jenkins/inbound-agent:latest
+                    image: m.daocloud.io/docker.io/jenkins/inbound-agent:latest
                     args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
             """
         }

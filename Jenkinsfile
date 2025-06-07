@@ -3,7 +3,7 @@ pipeline {
         kubernetes {
             cloud 'kubernetes'
             namespace 'jenkins'
-            agentInjection false
+            defaultContainer 'jnlp'
             yaml """
                 kind: Pod
                 spec:

@@ -2,7 +2,6 @@ pipeline {
     agent {
         kubernetes {
             cloud 'kubernetes'
-            namespace 'jenkins'
             defaultContainer 'jnlp'
             yaml """
                 kind: Pod

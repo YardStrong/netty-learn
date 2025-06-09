@@ -20,6 +20,11 @@ pipeline {
                 echo 'hello'
             }
         }
+        stage('Archive artifacts') {
+            steps {
+                archiveArtifacts(artifacts: '*.xml', followSymlinks: false)
+            }
+        }
 
     }
 }
